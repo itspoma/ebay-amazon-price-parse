@@ -1,0 +1,7 @@
+.md-errors-spacer {
+  min-height: 0px !important;
+}
+
+md-input-container.md-input-focused input {
+  background: #FAFAFA !important;
+}

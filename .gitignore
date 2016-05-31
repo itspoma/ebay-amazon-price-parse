@@ -9,8 +9,6 @@ node_modules
 logs
 cache
 site/vendor
-site/web/assets
-site/web/vendor
 site/composer.lock
 
 site/src/config/version.yml
