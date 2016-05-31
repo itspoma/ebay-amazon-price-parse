@@ -12,5 +12,6 @@ sed "s/SetEnv ENVIRONMENT.*/SetEnv ENVIRONMENT ${ENVIRONMENT}/" -i /etc/httpd/co
 
 # change permissions for data & logs directories
 chmod -R 0777 /shared/logs/
+chmod -R 0777 /shared/site/data
 
 /bin/bash

@@ -1,2 +1,2 @@
 <?php
-var_dump(__FILE__);
+require_once '../src/bootstrap.php';

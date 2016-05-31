@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="utf-8" />
+  <title></title>
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.9/angular-material.min.css" />
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body ng-controller="pageCtrl" ng-cloak>
+  <div layout="column" layout-align="center center" layout-padding>
+    <div layout="row" layout-fill layout-align="center center">
+
+      <form
+        layout="column"
+        layout-gt-xs="row"
+        flex="100"
+        flex-gt-sm="50"
+        name="searchForm"
+        ng-model="searchForm"
+        ng-submit="search()"
+      >
+
+        <md-input-container flex="80">
+          <label>Product code</label>
+
+          <input
+            id="query-field"
+            ng-model="query"
+            ng-disabled="searchInProgress"
+            name="number"
+            placeholder="5013705221729"
+            required
+          >
+
+          <div ng-messages="searchForm.query.$error">
+            <div ng-message="required">The field is required!</div>
+          </div>
+        </md-input-container>
+
+        <div flex></div>
+
+        <section layout="row" layout-align="center center">
+          <md-button ng-hide="searchInProgress" type="submit" class="md-raised">Search</md-button>
+          <md-progress-circular ng-show="searchInProgress" md-mode="indeterminate"></md-progress-circular>
+        </section>
+
+      </form>
+    </div>
+
+    <div layout="column" ng-show="searchInProgress || searchShowIntermediateResults">
+      <div ng-repeat="result in searchIntermediateResults">
+        <b>{{result.source}}</b> - {{result.title}} - {{result.price}}
+      </div>
+    </div>
+
+    <div layout="column" layout-fill layout-align="center center">
+      <div ng-show="refreshingTheResults">
+        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+      </div>
+
+      <div ng-show="!results.length && !refreshingTheResults">
+        <b>There're no previous search results!</b>
+      </div>
+
+      <div ng-hide="!results.length" layout="column" flex="100">
+
+        <div layout-margin ng-repeat="result in results">
+          <md-card>
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">{{result.query}}</span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+              <p>added_date: {{result.added_date}}</p>
+              <p>updated_date: {{result.updated_date}}</p>
+              <p>amazon: {{result['price-amazon']}} / {{result['title-amazon']}}</p>
+              <p>ebay: {{result['price-ebay']}} / {{result['title-ebay']}}</p>
+              <p>musicmagpie: {{result['price-musicmagpie']}} / {{result['title-musicmagpie']}}</p>
+              <p>zapper: {{result['price-zapper']}} / {{result['title-zapper']}}</p>
+              <p>ziffit: {{result['price-ziffit']}} / {{result['title-ziffit']}}</p>
+            </md-card-content>
+          </md-card>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.1/angular.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.1/angular-animate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.1/angular-aria.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.1/angular-messages.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.1/angular-resource.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.9/angular-material.min.js"></script>
+  <script src="/assets/app.js"></script>
+</body>
+</html>

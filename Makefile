@@ -42,7 +42,6 @@ help:
 	@echo -e " ${WHITE}env${NC}           \xE2\x80\xA3 to view the ${WHITE}build parameters${NC}"
 	@echo -e " ${WHITE}deps${NC}          \xE2\x80\xA3 to download & setup all app ${WHITE}dependencies${NC}"
 	@echo -e " ${WHITE}deps-refresh${NC}  \xE2\x80\xA3 to download & setup all app ${WHITE}dependencies${NC}"
-	@echo -e " ${WHITE}assets${NC}        \xE2\x80\xA3 to re-generate app ${WHITE}static files${NC}"
 	@echo -e " ${WHITE}dump-db${NC}       \xE2\x80\xA3 to dump current state of ${WHITE}database${NC}"
 	@echo -e " ${WHITE}logs${NC}          \xE2\x80\xA3 to see all ${WHITE}logs${NC} related to app"
 	@echo -e ""
@@ -55,6 +54,7 @@ precheck:
 	@chmod -R 0777 environment/mysql/data
 	@chmod -R 0777 logs/
 	@chmod -R 0777 site/vendor/
+	@chmod -R 0777 site/data
 	@echo -e 'succeed'
 
 env:
@@ -117,23 +117,17 @@ ssh:
 
 logs:
 	@echo -e "${GREEN}${ICON_RIGHT} reading app logs..${NC}"
-	@docker exec -ti ${CONTAINER_NAME} /bin/sh -c 'tail -f $$(find /shared/logs/ /shared/site/logs/ -type f)'
+	@docker exec -ti ${CONTAINER_NAME} /bin/sh -c 'tail -f $$(find /shared/logs/ -type f)'
 
 deps:
 	@echo -e "${GREEN}${ICON_RIGHT} installing app dependencies..${NC}"
-	@docker exec -ti ${CONTAINER_NAME} /bin/sh -c 'cd /shared/site && bower install --allow-root'
 	@docker exec -ti ${CONTAINER_NAME} /bin/sh -c 'cd /shared/site && composer install'
-	@docker exec -ti ${CONTAINER_NAME} /bin/sh -c 'cd /shared/site && npm install'
 
 deps-remove:
 	@echo -e "${GREEN}${ICON_RIGHT} removing app dependencies..${NC}"
 	@docker exec -ti ${CONTAINER_NAME} /bin/sh -c 'cd /shared/site && rm -rf composer.lock vendor/'
 
 deps-refresh: deps-remove deps
-
-assets:
-	@echo -e "${GREEN}${ICON_RIGHT} compiling app assets..${NC}"
-	@docker exec -ti ${CONTAINER_NAME} /bin/sh -c 'bash /shared/environment/assets.sh'
 
 dump-db:
 	@echo -e "${GREEN}${ICON_RIGHT} creating dump of database..${NC}"
