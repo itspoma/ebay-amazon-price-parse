@@ -4,7 +4,7 @@
 
 **Is an PHP & Angular application that parse the lowest price from Amazon & eBay.**
 
-![](http://new.tinygrab.com/7020c0e8b0bf2216f7359f565135bb98523c7aafbb.png)
+![](http://new.tinygrab.com/7020c0e8b02d88be877c02ce067a258785148ababa.png)
 
 ### Setup on local
 1. Checkout the project repo
