@@ -24,8 +24,9 @@ class EbayLowestParser extends AbstractParser {
 
     $dto = new ParseResultDto;
 
+
     if (preg_match('/lvprice prc.+?[\r\n]+.+?bold">[\r\s\t\n]*(.+?)</', $page2->raw, $m)) {
-      $dto->price = trim($m[1]);
+      $dto->price = strip_tags(trim($m[1]));
     }
 
     if (preg_match('/src=.http...thumbs.ebaystatic.com..+?alt=\'(.+?)\' \/>/', $page2->raw, $m)) {
