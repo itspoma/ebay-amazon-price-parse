@@ -10,8 +10,6 @@ class ZiffitParser extends AbstractParser {
   const NAME = 'Ziffit';
 
   public function parsePrice($value) {
-    $value = urlencode($value);
-
     $session = new \Requests_Session('https://www.ziffit.com/');
     $session->headers['Origin'] = 'https://www.ziffit.com';
     $session->useragent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36';
@@ -30,11 +28,11 @@ class ZiffitParser extends AbstractParser {
     $dto = new ParseResultDto;
 
     if (preg_match('/data-title="Offer".+?([\d\.]+)</', $response->raw, $m)) {
-      $dto->price = $m[1];
+      $dto->price = trim($m[1]);
     }
 
     if (preg_match('/id="titleColumn" data-title="Title">(.+?)</', $response->raw, $m)) {
-      $dto->title = $m[1];
+      $dto->title = trim(html_entity_decode($m[1]));
     }
 
     return $dto;
