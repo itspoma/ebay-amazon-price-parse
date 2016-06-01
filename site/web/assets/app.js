@@ -35,9 +35,19 @@ app.factory('Results', function ($resource, $http) {
       responseType: 'json',
       transformResponse: function(response, headers) {
         if (response.data && response.data.records) {
+
           response.data.records.forEach(function (record) {
             record.added_date = new Date(record.added_date);
             record.updated_date = new Date(record.updated_date);
+            record.title = null;
+
+            for (var k in record) {
+              var v = record[k];
+              if (0 == k.indexOf('title-') && v) {
+                record.title = v;
+                break;
+              }
+            }
           });
         }
 
@@ -45,9 +55,9 @@ app.factory('Results', function ($resource, $http) {
       }
     },
 
-    'delete': {
+    'deleteAll': {
       method: 'GET',
-      url: baseUrl + '?action=delete'
+      url: baseUrl + '?action=delete-all'
     }
   });
 });
@@ -103,12 +113,14 @@ app.controller('pageCtrl', function($scope, $timeout, $mdToast, Results, Search)
 
     $scope.searchShowIntermediateResults = true;
     $scope.searchIntermediateResults = [];
+    $scope.searchIntermediateTitle = '';
 
     var query = $scope.query
       , sourcesParsed = 0
       , sources = [
         'amazon',
-        'ebay',
+        'ebaylowest',
+        'ebaylowestsold',
         'musicmagpie',
         'zapper',
         'ziffit'
@@ -139,10 +151,11 @@ app.controller('pageCtrl', function($scope, $timeout, $mdToast, Results, Search)
           $scope.toastMessage(_message);
         }
         else {
-          $scope.searchIntermediateResults.push({
-            'source': response.data.source,
-            'price': response.data.price
-          })
+          if (response.data.title) {
+            $scope.searchIntermediateTitle = response.data.title
+          }
+
+          $scope.searchIntermediateResults.push(response.data)
         }
 
         //
@@ -152,8 +165,8 @@ app.controller('pageCtrl', function($scope, $timeout, $mdToast, Results, Search)
   }
 
   // delete action
-  $scope.delete = function (record) {
-    Results.delete({'query': record.query}, function (response) {
+  $scope.deleteAll = function () {
+    Results.deleteAll({}, function (response) {
       // analyze the response
       if (response.error) {
         var _message = 'the request to delete record was failed due to - ' + response.error;
@@ -164,4 +177,23 @@ app.controller('pageCtrl', function($scope, $timeout, $mdToast, Results, Search)
     });
   }
 
+});
+
+app.filter('truncate', function () {
+  return function (text, length, end) {
+    if (isNaN(length)) {
+      length = 10;
+    }
+
+    if (end === undefined) {
+      end = "...";
+    }
+
+    if (!text || text.length <= length || text.length - end.length <= length) {
+      return text;
+    }
+    else {
+      return String(text).substring(0, length-end.length) + end;
+    }
+  };
 });

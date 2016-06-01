@@ -2,6 +2,87 @@
   min-height: 0px !important;
 }
 
-md-input-container.md-input-focused input {
-  background: #FAFAFA !important;
+#search {
+  background: #F5F5F5;
+}
+
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+
+#searchIntermediateResults md-chips-wrap {
+  text-align: center;
+}
+
+#searchIntermediateResults md-chips-wrap md-chip {
+  float: none !important;
+  display: inline-block;
+}
+
+#results {
+  width: 100%;
+  text-align: center;
+}
+#results #item {
+  display: inline-block;
+  margin: 5px;
+  padding: 5px;
+  background: #F9f9f9;
+  vertical-align: top;
+  text-align: left;
+}
+
+#results table {
+  width: 100%;
+}
+#results table thead {
+  background: #ECEFF1;
+}
+#results table thead th {
+  padding: 10px;
+}
+@media screen and (max-width: 800px) {
+  #results table thead th {
+    padding: 5px;
+  }
+}
+@media screen and (max-width: 700px) {
+  #results table thead {
+    font-size: 13px;
+  }
+  #results table thead th {
+    padding: 0px;
+  }
+}
+#results table tbody tr.query .date {
+  float: right;
+}
+
+#results table tbody tr.query td {
+  border-top: 10px #FAFAFA solid;
+}
+#results table tbody tr.query.even {
+  background: #cce4f5;
+}
+#results table tbody tr.prices.even {
+  background: #E3F2FD;
+}
+#results table tbody tr.query.odd {
+  background: #c9f0f5;
+}
+#results table tbody tr.prices.odd {
+  background: #E0F7FA;
+}
+
+#results table thead th,
+#results table tbody td {
+  word-wrap: break-word;
+  word-break: break-all;
+}
+#results table td.date {
+  font-size: 10px;
+  text-align: center;
 }

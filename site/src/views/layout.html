@@ -9,11 +9,10 @@
 </head>
 <body ng-controller="pageCtrl" ng-cloak>
   <div layout="column" layout-align="center center" layout-padding>
-    <div layout="row" layout-fill layout-align="center center">
+    <div layout="row" layout-fill layout-align="center center" id="search">
 
       <form
-        layout="column"
-        layout-gt-xs="row"
+        layout="row"
         flex="100"
         flex-gt-sm="50"
         name="searchForm"
@@ -34,24 +33,39 @@
           >
 
           <div ng-messages="searchForm.query.$error">
-            <div ng-message="required">The field is required!</div>
+            <!-- <div ng-message="required">The field is required!</div> -->
           </div>
         </md-input-container>
 
         <div flex></div>
 
         <section layout="row" layout-align="center center">
-          <md-button ng-hide="searchInProgress" type="submit" class="md-raised">Search</md-button>
+          <md-button
+            type="submit"
+            class="md-raised"
+            ng-hide="searchInProgress"
+            ng-disabled="!searchForm.$valid"
+          >Search</md-button>
+
           <md-progress-circular ng-show="searchInProgress" md-mode="indeterminate"></md-progress-circular>
         </section>
 
       </form>
     </div>
 
-    <div layout="column" ng-show="searchInProgress || searchShowIntermediateResults">
-      <div ng-repeat="result in searchIntermediateResults">
-        <b>{{result.source}}</b> - {{result.title}} - {{result.price}}
-      </div>
+    <div id="searchIntermediateResults" layout="column" layout-align="center center" ng-show="searchInProgress || searchShowIntermediateResults">
+      <b class="text-center">{{ searchIntermediateTitle }}</b>
+
+      <md-chips layout-align="center center">
+        <md-chip ng-repeat="result in searchIntermediateResults">
+          <md-tooltip>{{result.title}}</md-tooltip>
+
+          <b>{{result['source-name']}}</b>
+
+          <span ng-show="result.price">{{result.price}}</span>
+          <span ng-show="!result.price">nothing</span>
+        </md-chip>
+      </md-chips>
     </div>
 
     <div layout="column" layout-fill layout-align="center center">
@@ -63,30 +77,53 @@
         <b>There're no previous search results!</b>
       </div>
 
-      <div ng-hide="!results.length" layout="column" flex="100">
+      <div id="results" ng-hide="!results.length">
 
-        <div layout-margin ng-repeat="result in results | orderBy:'updated_date'">
-          <md-card>
-            <md-card-title>
-              <md-card-title-text>
-                <span class="md-headline">{{result.query}}</span>
-              </md-card-title-text>
-            </md-card-title>
-            <md-card-content>
-              <p>added_date: {{ result.added_date | date:'dd/mm/yyyy HH:mm:ss'}}</p>
-              <p>updated_date: {{ result.updated_date | date:'dd/mm/yyyy HH:mm:ss' }}</p>
-              <p ng-show="result['price-amazon']"><b>amazon</b>: {{result['price-amazon']}} / {{result['title-amazon']}}</p>
-              <p ng-show="result['price-ebay']"><b>ebay</b>: {{result['price-ebay']}} / {{result['title-ebay']}}</p>
-              <p ng-show="result['price-musicmagpie']"><b>musicmagpie</b>: {{result['price-musicmagpie']}} / {{result['title-musicmagpie']}}</p>
-              <p ng-show="result['price-zapper']"><b>zapper</b>: {{result['price-zapper']}} / {{result['title-zapper']}}</p>
-              <p ng-show="result['price-ziffit']"><b>ziffit</b>: {{result['price-ziffit']}} / {{result['title-ziffit']}}</p>
+        <table border="0">
+          <thead>
+            <tr>
+              <th>Amazon</th>
+              <th>eBay (lowest)</th>
+              <th>eBay (lowest &amp; sold)</th>
+              <th>MusicMagpie</th>
+              <th>Zapper</th>
+              <th>Ziffit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat-start="result in results"
+              class="query"
+              ng-class-odd="'odd'" ng-class-even="'even'"
+            >
+              <td class="text-left" colspan="7">
+                <b>{{ result.query }}</b>
+                -
+                <span class="title">{{ result.title }}</span>
+                -
+                <span class="date">
+                  {{ result.updated_date | date:'dd/mm/yy HH:mm:ss' }}
+                </span>
+              </td>
+            </tr>
+            <tr
+              class="prices"
+              ng-class-odd="'odd'" ng-class-even="'even'"
+              ng-repeat-end
+            >
+              <td width="16%">{{ result['price-amazon'] }}</td>
+              <td width="16%">{{ result['price-ebaylowest'] }}</td>
+              <td width="16%">{{ result['price-ebaylowestsold'] }}</td>
+              <td width="16%">{{ result['price-musicmagpie'] }}</td>
+              <td width="16%">{{ result['price-zapper'] }}</td>
+              <td>{{ result['price-ziffit'] }}</td>
+            </tr>
 
-              <p>
-                <md-button class="md-warn md-raised" ng-click="delete(result)">delete</md-button>
-              </p>
-            </md-card-content>
-          </md-card>
-        </div>
+          </tbody>
+        </table>
+
+        <br/>
+
+        <md-button class="md-warn md-raised" ng-click="deleteAll()">Delete all</md-button>
 
       </div>
     </div>

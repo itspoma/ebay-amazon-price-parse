@@ -7,11 +7,11 @@ use \app\services\dto\ParseResultDto as ParseResultDto;
  *
  */
 class ZapperParser extends AbstractParser {
+  const KEY = 'Zapper';
   const NAME = 'Zapper';
 
+  // https://zapper.co.uk/get-started.html
   public function parsePrice($value) {
-    $value = urlencode($value);
-
     $session = new \Requests_Session('https://zapper.co.uk/');
     $session->headers['Origin'] = 'https://zapper.co.uk';
     $session->useragent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36';
@@ -29,7 +29,7 @@ class ZapperParser extends AbstractParser {
       'action' => 'BarcodeSubmitAllowed',
     ]);
 
-    $request = $session->post('/embedded-list.html', [], [
+    $page1 = $session->post('/embedded-list.html', [], [
       'listid' => '-1',
       'identifier' => $value,
     ], [
@@ -39,11 +39,11 @@ class ZapperParser extends AbstractParser {
 
     $dto = new ParseResultDto;
 
-    if (preg_match('/TOTAL &pound;([\d\.]+)</', $request->raw, $m)) {
+    if (preg_match('/TOTAL &pound;([\d\.]+)</', $page1->raw, $m)) {
       $dto->price = $m[1];
     }
 
-    if (preg_match('/<td class="title"><div>(.+?)<.div><.td>/', $request->raw, $m)) {
+    if (preg_match('/<td class="title"><div>(.+?)<.div><.td>/', $page1->raw, $m)) {
       $dto->title = $m[1];
     }
 

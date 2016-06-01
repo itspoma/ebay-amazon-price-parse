@@ -25,6 +25,9 @@ if (strpos($_SERVER['SCRIPT_NAME'], 'api.php')) {
         $source = $_GET['source'];
         $query = $_GET['query'];
 
+        // get parser name
+        $parsedName = ParserService::getParserName($source);
+
         // parse action
         $parsedDto = ParserService::parse($source, $query);
         $parsedPrice = $parsedDto->price;
@@ -52,6 +55,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], 'api.php')) {
           ]);
         }
 
+        $response['data']['source-name'] = $parsedName;
         $response['data']['source'] = $source;
         $response['data']['price'] = $parsedPrice;
         $response['data']['title'] = $parsedTitle;
@@ -63,10 +67,16 @@ if (strpos($_SERVER['SCRIPT_NAME'], 'api.php')) {
       $response['data']['records'] = FileStorage::getInstance()->get('records');
     }
 
+    // delete one record
     else if ($action == 'delete') {
       $query = $_GET['query'];
 
       FileStorage::getInstance()->removeByKey('records', 'query', $query);
+    }
+
+    // delete all records
+    else if ($action == 'delete-all') {
+      FileStorage::getInstance()->removeAll('records');
     }
   }
 

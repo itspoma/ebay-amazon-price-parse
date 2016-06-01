@@ -7,6 +7,7 @@ use \app\services\dto\ParseResultDto as ParseResultDto;
  *
  */
 class MusicMagpieParser extends AbstractParser {
+  const KEY = 'MusicMagpie';
   const NAME = 'MusicMagpie';
 
   // http://www.musicmagpie.co.uk/start-selling/basket-media/

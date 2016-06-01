@@ -7,8 +7,10 @@ use \app\services\dto\ParseResultDto as ParseResultDto;
  *
  */
 class ZiffitParser extends AbstractParser {
+  const KEY = 'Ziffit';
   const NAME = 'Ziffit';
 
+  // https://www.ziffit.com/
   public function parsePrice($value) {
     $session = new \Requests_Session('https://www.ziffit.com/');
     $session->headers['Origin'] = 'https://www.ziffit.com';

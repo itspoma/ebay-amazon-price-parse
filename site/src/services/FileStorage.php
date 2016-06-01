@@ -94,4 +94,9 @@ class FileStorage {
     $queryRecords = array_values(array_filter($queryRecords));
     $this->db->set($key, $queryRecords);
   }
+
+  //
+  public function removeAll($key) {
+    $this->db->getAdapter()->del($key);
+  }
 }
