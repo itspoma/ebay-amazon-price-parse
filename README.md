@@ -28,9 +28,6 @@
 1. Get your Docker VM ip with ```$ docker-machine ip```
 1. Navigate to ```http://{docker-vm-ip}:8080/``` to check the app
 1. Navigate to ```http://{docker-vm-ip}:8080/phpmyadmin/``` to access into mysql
-1. Run ```$ make tests``` to run backend & FE tests
-1. Run ```$ make assets``` to compile app assets
-1. Run ```$ make deploy``` to deploy current version of app
 
 ### Setup on production
 1. Checkout the codebase
@@ -38,8 +35,6 @@
 1. Upload the up-to-date ```production.yml``` file to ```site/src/config/```
 1. Run ```$ make up``` to build & start container
 1. Run ```$ make deps``` to install the app dependencies
-1. Run ```$ make assets``` to compile & make assets up-to-date
-1. Run ```$ make tests``` to be sure that everything will work properly
 1. Navigate to your production url **(with port 80)**
   1. To manually set a port, add ```HTTP_PORT=1234``` variable before/after ```make``` command
 1. To update an application codebase
@@ -55,9 +50,7 @@
 - [**PHP** 5.5](http://php.net/manual/en/migration55.new-features.php)
 - [phpMyAdmin 4.0.10](https://www.phpmyadmin.net/) to manage the mysql data
 - [**Composer**](https://getcomposer.org/) as a dependency manager for PHP
-- [**Bower**](http://bower.io/) as a dependency manager for frontend assets
 - [**Angular Material**](https://material.angularjs.org/) as a MVC & UI on frontend
-- [**LESS**](http://lesscss.org/) pre-process CSS with features
 
 ### Issues
 - if case if you're got an directory permission issue, just run the ```make precheck``` that will set 0777 permissions for required directories

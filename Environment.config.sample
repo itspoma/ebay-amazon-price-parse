@@ -4,7 +4,4 @@ NODEJS_VERSION = 4.4.3
 
 PHP_VERSION = "php55w"
 
-MYSQL_USER = "root"
-MYSQL_PASSWORD = "..."
-
 RUBY_VERSION = 2.1.0

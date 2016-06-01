@@ -4,7 +4,6 @@ CONTAINER_NAME := $(notdir $(shell pwd))
 IMAGE_NAME = ${CONTAINER_NAME}/${VERSION}
 
 CONTAINER_HOME = /shared
-MYSQL_PORT = 33068
 HTTP_PORT = 80
 ENVIRONMENT = production
 
@@ -42,7 +41,6 @@ help:
 	@echo -e " ${WHITE}env${NC}           \xE2\x80\xA3 to view the ${WHITE}build parameters${NC}"
 	@echo -e " ${WHITE}deps${NC}          \xE2\x80\xA3 to download & setup all app ${WHITE}dependencies${NC}"
 	@echo -e " ${WHITE}deps-refresh${NC}  \xE2\x80\xA3 to download & setup all app ${WHITE}dependencies${NC}"
-	@echo -e " ${WHITE}dump-db${NC}       \xE2\x80\xA3 to dump current state of ${WHITE}database${NC}"
 	@echo -e " ${WHITE}logs${NC}          \xE2\x80\xA3 to see all ${WHITE}logs${NC} related to app"
 	@echo -e ""
 	@echo -e " ${DARKGRAY}(info) version:          ${VERSION}${NC}"
@@ -51,7 +49,6 @@ help:
 
 precheck:
 	@echo -e "${GREEN}${ICON_RIGHT} running precheck operations..${NC}"
-	@chmod -R 0777 environment/mysql/data
 	@chmod -R 0777 logs/
 	@chmod -R 0777 site/vendor/
 	@chmod -R 0777 site/data
@@ -98,15 +95,12 @@ build: stop clean-container
 	@sed "s/ARG ENVIRONMENT/ENV ENVIRONMENT \"${ENVIRONMENT}\"/" Dockerfile > x && mv x Dockerfile
 	@sed "s/ARG NODEJS_VERSION/ENV NODEJS_VERSION \"${NODEJS_VERSION}\"/" Dockerfile > x && mv x Dockerfile
 	@sed "s/ARG PHP_VERSION/ENV PHP_VERSION \"${PHP_VERSION}\"/" Dockerfile > x && mv x Dockerfile
-	@sed "s/ARG MYSQL_USER/ENV MYSQL_USER \"${MYSQL_USER}\"/" Dockerfile > x && mv x Dockerfile
-	@sed "s/ARG MYSQL_PASSWORD/ENV MYSQL_PASSWORD \"${MYSQL_PASSWORD}\"/" Dockerfile > x && mv x Dockerfile
 	@docker build -t ${IMAGE_NAME} .
 
 run: stop
 	@echo -e "${GREEN}${ICON_RIGHT} running app container..${NC}"
 	@docker run --name=${CONTAINER_NAME} \
 		-p ${HTTP_PORT}:8080 \
-		-p ${MYSQL_PORT}:3306 \
 		-v $$PWD:${CONTAINER_HOME} \
 		-e ENVIRONMENT="${ENVIRONMENT}" \
 		-ti -d ${IMAGE_NAME}
@@ -129,11 +123,6 @@ deps-remove:
 
 deps-refresh: deps-remove deps
 
-dump-db:
-	@echo -e "${GREEN}${ICON_RIGHT} creating dump of database..${NC}"
-	@docker exec -ti ${CONTAINER_NAME} /bin/sh -c 'bash /shared/environment/dump.sh'
-
 restart:
 	@echo -e "${GREEN}${ICON_RIGHT} restarting the app services..${NC}"
 	@docker exec -ti ${CONTAINER_NAME} /bin/sh -c 'service httpd restart'
-	@docker exec -ti ${CONTAINER_NAME} /bin/sh -c 'service mysqld restart'
