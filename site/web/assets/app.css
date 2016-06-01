@@ -24,6 +24,7 @@
 
 #results {
   width: 100%;
+  max-width: 1000px;
   text-align: center;
 }
 #results #item {
@@ -85,4 +86,8 @@
 #results table td.date {
   font-size: 10px;
   text-align: center;
+}
+
+.md-warn-lg {
+  padding: 10px 20px;
 }
