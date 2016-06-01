@@ -91,7 +91,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat-start="result in results"
+            <tr ng-repeat-start="result in results | orderBy:'-updated_date'"
               class="query"
               ng-class-odd="'odd'" ng-class-even="'even'"
             >
