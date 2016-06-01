@@ -1,5 +1,7 @@
 <?php
-namespace app\services;
+namespace app\services\parsers;
+
+use \app\services\dto\ParseResultDto as ParseResultDto;
 
 /**
  *
@@ -8,7 +10,9 @@ class AmazonParser extends AbstractParser {
   const NAME = 'Amazon';
 
   public function parsePrice($value) {
-    return null;
+    $dto = new ParseResultDto;
+    return $dto;
+
     $value = urlencode($value);
 
     $url = sprintf(
@@ -24,9 +28,11 @@ class AmazonParser extends AbstractParser {
       // ->find("div[class=a-row] span[class=a-size-base]")
       ;
 
+    $dto = new ParseResultDto;
+
     // var_dump($elem);die;
     // $price = $elem['0']->plaintext;
 
-    return rand(1,9);
+    return $dto;
   }
 }

@@ -1,62 +1,97 @@
 <?php
 namespace app\services;
 
+use Desarrolla2\Cache\Cache;
+use Desarrolla2\Cache\Adapter\NotCache;
+use Desarrolla2\Cache\Adapter\File;
+
 /**
  *
  */
 class FileStorage {
-  static private $db;
+  private $db;
+  static private $instance;
+
+  private function __construct() {
+    $adapter = new File(DB_DATA_PATH);
+    $cache = new Cache($adapter);
+
+    $this->db = $cache;
+  }
 
   //
-  public function init() {
-    // touch db file
-    if (!file_exists(DB_DATA_FILE)) {
-      touch(DB_DATA_FILE);
+  static public function getInstance() {
+    if (!isset(self::$instance)) {
+      self::$instance = new self;
     }
 
-    if (!self::$db) {
-      $db = file_get_contents(DB_DATA_FILE);
-      $db = json_decode($db, true);
-
-      self::$db = $db;
-    }
+    return self::$instance;
   }
 
   //
-  static public function save() {
-    $db = json_encode(self::$db);
-    file_put_contents(DB_DATA_FILE, $db);
+  public function get($key) {
+    return $this->db->get($key);
   }
 
   //
-  static public function set($key, $value) {
-    self::init();
+  public function findBy($key, $searchBy, $searchValue) {
+    $record = null;
 
-    self::$db[$key] = $value;
-    self::save();
-  }
+    $queryRecords = (array) $this->get($key);
 
-  //
-  static public function append($key, $value) {
-    self::init();
-
-    if (!isset(self::$db[$key])) {
-      self::$db[$key] = [];
+    foreach ($queryRecords as $queryRecord) {
+      if ($queryRecord[$searchBy] == $searchValue) {
+        $record = &$queryRecord;
+        break;
+      }
     }
 
-    self::$db[$key][] = $value;
-    self::save();
+    return $record;
   }
 
   //
-  static public function getAll() {
-    self::init();
-    return self::$db;
+  public function set($key, $value) {
+    $this->db->set($key, $value);
   }
 
   //
-  static public function get($key) {
-    self::init();
-    return isset(self::$db[$key]) ? self::$db[$key] : null;
+  public function setByKey($key, $searchBy, $searchValue, $value) {
+    $queryRecords = (array) $this->get($key);
+
+    foreach ($queryRecords as &$queryRecord) {
+      if ($queryRecord[$searchBy] == $searchValue) {
+        $queryRecord = $value;
+        break;
+      }
+    }
+
+    $this->db->set($key, $queryRecords);
+  }
+
+  //
+  public function append($key, $value) {
+    $currentValue = $this->get($key);
+
+    if (!isset($currentValue)) {
+      $currentValue = [];
+    }
+
+    $currentValue[] = $value;
+    $this->set($key, $currentValue);
+  }
+
+  //
+  public function removeByKey($key, $searchBy, $searchValue) {
+    $queryRecords = (array) $this->get($key);
+
+    foreach ($queryRecords as &$queryRecord) {
+      if ($queryRecord[$searchBy] == $searchValue) {
+        $queryRecord = null;
+        break;
+      }
+    }
+
+    $queryRecords = array_values(array_filter($queryRecords));
+    $this->db->set($key, $queryRecords);
   }
 }

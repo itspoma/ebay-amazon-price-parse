@@ -1,5 +1,7 @@
 <?php
-namespace app\services;
+namespace app\services\parsers;
+
+use \app\services\dto\ParseResultDto as ParseResultDto;
 
 /**
  *
@@ -25,20 +27,16 @@ class ZiffitParser extends AbstractParser {
       'Referer' => 'https://www.ziffit.com/processEan'
     ]);
 
+    $dto = new ParseResultDto;
+
     if (preg_match('/data-title="Offer".+?([\d\.]+)</', $response->raw, $m)) {
-      $title = null;
-      $price = $m[1];
-
-      if (preg_match('/id="titleColumn" data-title="Title">(.+?)</', $response->raw, $m)) {
-        $title = $m[1];
-      }
-
-      return [
-        'title' => $title,
-        'price' => $price,
-      ];
+      $dto->price = $m[1];
     }
 
-    return null;
+    if (preg_match('/id="titleColumn" data-title="Title">(.+?)</', $response->raw, $m)) {
+      $dto->title = $m[1];
+    }
+
+    return $dto;
   }
 }

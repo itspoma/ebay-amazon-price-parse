@@ -1,9 +1,5 @@
 <?php
-use \app\services\AmazonParser as AmazonParser;
-use \app\services\EbayParser as EbayParser;
-use \app\services\MusicMagpieParser as MusicMagpieParser;
-use \app\services\ZapperParser as ZapperParser;
-use \app\services\ZiffitParser as ZiffitParser;
+use \app\services\ParserService as ParserService;
 use \app\services\FileStorage as FileStorage;
 
 // request to api.php
@@ -29,60 +25,48 @@ if (strpos($_SERVER['SCRIPT_NAME'], 'api.php')) {
         $source = $_GET['source'];
         $query = $_GET['query'];
 
-        if (strtolower(AmazonParser::NAME) == $source) {
-          $parsed = AmazonParser::parsePrice($query);
-        }
-        elseif (strtolower(EbayParser::NAME) == $source) {
-          $parsed = EbayParser::parsePrice($query);
-        }
-        elseif (strtolower(MusicMagpieParser::NAME) == $source) {
-          $parsed = MusicMagpieParser::parsePrice($query);
-        }
-        elseif (strtolower(ZapperParser::NAME) == $source) {
-          $parsed = ZapperParser::parsePrice($query);
-        }
-        elseif (strtolower(ZiffitParser::NAME) == $source) {
-          $parsed = ZiffitParser::parsePrice($query);
-        }
+        // parse action
+        $parsedDto = ParserService::parse($source, $query);
+        $parsedPrice = $parsedDto->price;
+        $parsedTitle = $parsedDto->title;
 
-        $price = @$parsed['price'];
-        $title = @$parsed['title'];
+        // check if record already exists (by query)
+        $record = FileStorage::getInstance()->findBy('records', 'query', $query);
 
-        $record = null;
-        $queryRecords = (array) FileStorage::get('records');
-        foreach ($queryRecords as &$queryRecord) {
-          if ($queryRecord['query'] == $query) {
-            $record = &$queryRecord;
-            break;
-          }
-        }
-
+        // if exists, then update
         if ($record) {
-          $record['price-'.$source] = $price;
-          $record['title-'.$source] = $title;
-          $record['updated_date'] = date('Y-m-d H:i:s');
+          $record["price-$source"] = $parsedPrice;
+          $record["title-$source"] = $parsedTitle;
+          $record['updated_date']  = date('Y-m-d H:i:s');
 
-          FileStorage::set('records', $queryRecords);
+          FileStorage::getInstance()->setByKey('records', 'query', $query, $record);
         }
+        // if not - the create new
         else {
-          $records = FileStorage::append('records', [
-            'query' => $query,
-            'added_date' => date('Y-m-d H:i:s'),
-            'update_date' => date('Y-m-d H:i:s'),
-            'price-'.$source => $price,
-            'title-'.$source => $title,
+          $records = FileStorage::getInstance()->append('records', [
+            'query'         => $query,
+            'added_date'    => date('Y-m-d H:i:s'),
+            'update_date'   => date('Y-m-d H:i:s'),
+            "price-$source" => $parsedPrice,
+            "title-$source" => $parsedTitle,
           ]);
         }
 
         $response['data']['source'] = $source;
-        $response['data']['price'] = $price;
-        $response['data']['title'] = $title;
+        $response['data']['price'] = $parsedPrice;
+        $response['data']['title'] = $parsedTitle;
       }
     }
 
     // list of results
     else if ($action == 'results') {
-      $response['data']['records'] = FileStorage::get('records');
+      $response['data']['records'] = FileStorage::getInstance()->get('records');
+    }
+
+    else if ($action == 'delete') {
+      $query = $_GET['query'];
+
+      FileStorage::getInstance()->removeByKey('records', 'query', $query);
     }
   }
 

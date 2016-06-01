@@ -65,7 +65,7 @@
 
       <div ng-hide="!results.length" layout="column" flex="100">
 
-        <div layout-margin ng-repeat="result in results">
+        <div layout-margin ng-repeat="result in results | orderBy:'updated_date'">
           <md-card>
             <md-card-title>
               <md-card-title-text>
@@ -73,13 +73,17 @@
               </md-card-title-text>
             </md-card-title>
             <md-card-content>
-              <p>added_date: {{result.added_date}}</p>
-              <p>updated_date: {{result.updated_date}}</p>
-              <p>amazon: {{result['price-amazon']}} / {{result['title-amazon']}}</p>
-              <p>ebay: {{result['price-ebay']}} / {{result['title-ebay']}}</p>
-              <p>musicmagpie: {{result['price-musicmagpie']}} / {{result['title-musicmagpie']}}</p>
-              <p>zapper: {{result['price-zapper']}} / {{result['title-zapper']}}</p>
-              <p>ziffit: {{result['price-ziffit']}} / {{result['title-ziffit']}}</p>
+              <p>added_date: {{ result.added_date | date:'dd/mm/yyyy HH:mm:ss'}}</p>
+              <p>updated_date: {{ result.updated_date | date:'dd/mm/yyyy HH:mm:ss' }}</p>
+              <p ng-show="result['price-amazon']"><b>amazon</b>: {{result['price-amazon']}} / {{result['title-amazon']}}</p>
+              <p ng-show="result['price-ebay']"><b>ebay</b>: {{result['price-ebay']}} / {{result['title-ebay']}}</p>
+              <p ng-show="result['price-musicmagpie']"><b>musicmagpie</b>: {{result['price-musicmagpie']}} / {{result['title-musicmagpie']}}</p>
+              <p ng-show="result['price-zapper']"><b>zapper</b>: {{result['price-zapper']}} / {{result['title-zapper']}}</p>
+              <p ng-show="result['price-ziffit']"><b>ziffit</b>: {{result['price-ziffit']}} / {{result['title-ziffit']}}</p>
+
+              <p>
+                <md-button class="md-warn md-raised" ng-click="delete(result)">delete</md-button>
+              </p>
             </md-card-content>
           </md-card>
         </div>

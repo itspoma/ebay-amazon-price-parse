@@ -1,5 +1,7 @@
 <?php
-namespace app\services;
+namespace app\services\parsers;
+
+use \app\services\dto\ParseResultDto as ParseResultDto;
 
 /**
  *
@@ -35,20 +37,16 @@ class ZapperParser extends AbstractParser {
       'connect_timeout' => 100,
     ]);
 
+    $dto = new ParseResultDto;
+
     if (preg_match('/TOTAL &pound;([\d\.]+)</', $request->raw, $m)) {
-      $title = null;
-      $price = $m[1];
-
-      if (preg_match('/<td class="title"><div>(.+?)<.div><.td>/', $request->raw, $m)) {
-        $title = $m[1];
-      }
-
-      return [
-        'title' => $title,
-        'price' => $price,
-      ];
+      $dto->price = $m[1];
     }
 
-    return null;
+    if (preg_match('/<td class="title"><div>(.+?)<.div><.td>/', $request->raw, $m)) {
+      $dto->title = $m[1];
+    }
+
+    return $dto;
   }
 }

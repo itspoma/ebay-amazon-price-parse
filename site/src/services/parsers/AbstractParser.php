@@ -1,5 +1,5 @@
 <?php
-namespace app\services;
+namespace app\services\parsers;
 
 /**
  *
