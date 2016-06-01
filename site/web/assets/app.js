@@ -34,10 +34,12 @@ app.factory('Results', function ($resource, $http) {
       url: baseUrl + '?action=results',
       responseType: 'json',
       transformResponse: function(response, headers) {
-        response.data.records.forEach(function (record) {
-          record.added_date = new Date(record.added_date);
-          record.updated_date = new Date(record.updated_date);
-        });
+        if (response.data && response.data.records) {
+          response.data.records.forEach(function (record) {
+            record.added_date = new Date(record.added_date);
+            record.updated_date = new Date(record.updated_date);
+          });
+        }
 
         return response;
       }
