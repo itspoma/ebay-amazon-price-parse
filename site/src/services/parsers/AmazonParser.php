@@ -16,8 +16,10 @@ class AmazonParser extends AbstractParser {
 
     $page1 = $session->get('/ref=nav_logo');
 
-    // $page2 = $session->get('/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords='.$value);
-    $page3 = $session->get('/gp/offer-listing/B00009YNG9/ref=sr_1_1_twi_aud_2_olp?ie=UTF8&qid='.rand(1111,99999999).'&sr=8-1&keywords='.$value);
+    $page2 = $session->get('/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords='.$value);
+    $offerListingId = preg_match('/offer-listing\/(.+?)\/ref/', $page2->raw, $m) ? $m[1] : null;
+
+    $page3 = $session->get('/gp/offer-listing/'.$offerListingId.'/ref=sr_1_1_twi_aud_2_olp?ie=UTF8&qid='.rand(1111,99999999).'&sr=8-1&keywords='.$value);
 
     $dto = new ParseResultDto;
 
