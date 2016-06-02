@@ -7,6 +7,7 @@ use \app\services\parsers\EbayLowestSoldParser as EbayLowestSoldParser;
 use \app\services\parsers\MusicMagpieParser as MusicMagpieParser;
 use \app\services\parsers\ZapperParser as ZapperParser;
 use \app\services\parsers\ZiffitParser as ZiffitParser;
+use \app\services\parsers\WebuybooksParser as WebuybooksParser;
 
 /**
  *
@@ -35,6 +36,9 @@ class ParserService {
     elseif (strtolower(ZiffitParser::KEY) == $service) {
       $parserName = ZiffitParser::NAME;
     }
+    elseif (strtolower(WebuybooksParser::KEY) == $service) {
+      $parserName = WebuybooksParser::NAME;
+    }
 
     return $parserName;
   }
@@ -60,6 +64,9 @@ class ParserService {
     }
     elseif (strtolower(ZiffitParser::KEY) == $service) {
       $dto = ZiffitParser::parsePrice($query);
+    }
+    elseif (strtolower(WebuybooksParser::KEY) == $service) {
+      $dto = WebuybooksParser::parsePrice($query);
     }
 
     return $dto;

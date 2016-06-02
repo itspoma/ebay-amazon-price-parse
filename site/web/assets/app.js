@@ -66,6 +66,7 @@ app.factory('Results', function ($resource, $http) {
 app.controller('pageCtrl', function($scope, $timeout, $mdToast, Results, Search) {
   $scope.results = [];
   $scope.searchInProgress = false;
+  $scope.searchIntermediateResults = {};
 
   // quick message on top-right position
   $scope.toastMessage = function (message) {
@@ -80,6 +81,8 @@ app.controller('pageCtrl', function($scope, $timeout, $mdToast, Results, Search)
 
   // focus the input
   $scope.focusQueryField = function () {
+    $scope.query = '';
+
     $timeout(function () {
       document.getElementById('query-field').focus();
     }, 100);
@@ -109,12 +112,6 @@ app.controller('pageCtrl', function($scope, $timeout, $mdToast, Results, Search)
 
   // proceed search by submitting the form
   $scope.search = function () {
-    $scope.searchInProgress = true;
-
-    $scope.searchShowIntermediateResults = true;
-    $scope.searchIntermediateResults = [];
-    $scope.searchIntermediateTitle = '';
-
     var query = $scope.query
       , sourcesParsed = 0
       , sources = [
@@ -122,9 +119,15 @@ app.controller('pageCtrl', function($scope, $timeout, $mdToast, Results, Search)
         'ebaylowest',
         'ebaylowestsold',
         'musicmagpie',
-        'zapper',
+        // 'zapper',
+        'webuybooks',
         'ziffit'
       ];
+
+    $scope.searchInProgress = true;
+    $scope.searchIntermediateResults[query] = {};
+
+    $scope.focusQueryField();
 
     sources.forEach(function (source) {
       var searchParams = {
@@ -133,29 +136,27 @@ app.controller('pageCtrl', function($scope, $timeout, $mdToast, Results, Search)
       };
 
       Search.search(searchParams, function (response) {
-        // all sources are parsed
-        if (++sourcesParsed == sources.length) {
-          $scope.searchInProgress = false;
-          $scope.focusQueryField();
-
-          $scope.refreshResults();
-
-          $timeout(function () {
-            $scope.searchShowIntermediateResults = false;
-          }, 2000);
-        }
-
         // analyze the response
         if (response.error) {
           var _message = 'the request to ""' + response.data.source + '"" was failed due to - ' + response.error;
           $scope.toastMessage(_message);
         }
         else {
-          if (response.data.title) {
-            $scope.searchIntermediateTitle = response.data.title
+          $scope.searchIntermediateResults[query] = response.data;
+        }
+
+        // all sources are parsed
+        if (++sourcesParsed == sources.length) {
+          // remove current query-obj
+          delete $scope.searchIntermediateResults[query];
+
+          // if is last
+          if (0 == Object.keys($scope.searchIntermediateResults).length) {
+            $scope.searchInProgress = false;
+            $scope.focusQueryField();
           }
 
-          $scope.searchIntermediateResults.push(response.data)
+          $scope.refreshResults();
         }
 
         //

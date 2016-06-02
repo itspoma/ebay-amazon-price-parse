@@ -26,7 +26,6 @@
           <input
             id="query-field"
             ng-model="query"
-            ng-disabled="searchInProgress"
             name="number"
             placeholder="5013705221729"
             required
@@ -43,7 +42,6 @@
           <md-button
             type="submit"
             class="md-raised"
-            ng-hide="searchInProgress"
             ng-disabled="!searchForm.$valid"
           >Search</md-button>
 
@@ -54,16 +52,14 @@
     </div>
 
     <div id="searchIntermediateResults" layout="column" layout-align="center center" ng-show="searchInProgress || searchShowIntermediateResults">
-      <b class="text-center">{{ searchIntermediateTitle }}</b>
-
       <md-chips layout-align="center center">
-        <md-chip ng-repeat="result in searchIntermediateResults">
-          <md-tooltip>{{result.title}}</md-tooltip>
+        <md-chip ng-repeat="(searchQuery,searchResult) in searchIntermediateResults">
+          <md-tooltip>{{searchResult.title}}</md-tooltip>
 
-          <b>{{result['source-name']}}</b>
-
-          <span ng-show="result.price">{{result.price}}</span>
-          <span ng-show="!result.price">nothing</span>
+          <span>
+            <b>{{searchQuery}}</b>
+            <span>- {{searchResult['source-name']}}</span>
+          </span>
         </md-chip>
       </md-chips>
     </div>
@@ -79,47 +75,66 @@
 
       <div id="results" ng-hide="!results.length">
 
-        <table border="0">
-          <thead>
-            <tr>
-              <th>Amazon</th>
-              <th>eBay (lowest)</th>
-              <th>eBay (lowest &amp; sold)</th>
-              <th>MusicMagpie</th>
-              <th>Zapper</th>
-              <th>Ziffit</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat-start="result in results | orderBy:'-updated_date'"
-              class="query"
-              ng-class-odd="'odd'" ng-class-even="'even'"
-            >
-              <td class="text-left" colspan="7">
-                <b>{{ result.query }}</b>
-                -
-                <span class="title">{{ result.title }}</span>
-                -
-                <span class="date">
-                  {{ result.updated_date | date:'dd/mm/yy HH:mm:ss' }}
-                </span>
-              </td>
-            </tr>
-            <tr
-              class="prices"
-              ng-class-odd="'odd'" ng-class-even="'even'"
-              ng-repeat-end
-            >
-              <td width="16%">{{ result['price-amazon'] }}</td>
-              <td width="16%">{{ result['price-ebaylowest'] }}</td>
-              <td width="16%">{{ result['price-ebaylowestsold'] }}</td>
-              <td width="16%">{{ result['price-musicmagpie'] }}</td>
-              <td width="16%">{{ result['price-zapper'] }}</td>
-              <td>{{ result['price-ziffit'] }}</td>
-            </tr>
+        <div class="result-item clearfix" ng-repeat="result in results | orderBy:'-updated_date'">
+          <md-tooltip>
+            <span class="result-item-query">{{ result.query }}</span>
+          </md-tooltip>
 
-          </tbody>
-        </table>
+          <span class="result-item-updated">{{ result.updated_date | date:'dd/mm/yy HH:mm:ss' }}</span>
+          <span class="result-item-title">{{ result.title }}</span>
+
+          <span class="result-item-prices">
+            <!-- amazon -->
+            <span class="result-item-prices-price" ng-hide="!result['price-amazon']">
+              <i class="icon icon-amazon"></i>
+              <span class="result-item-prices-price-value">
+                {{ result['price-amazon'] }}
+              </span>
+            </span>
+
+            <!-- ebay -->
+            <span class="result-item-prices-price">
+              <i class="icon icon-ebay"></i>
+              <span class="result-item-prices-price-value" ng-hide="!result['price-ebaylowest'] && !result['price-ebaylowestsold']">
+                {{ result['price-ebaylowest'] }}
+                /
+                {{ result['price-ebaylowestsold'] }}
+              </span>
+            </span>
+
+            <!-- musicmagpie -->
+            <span class="result-item-prices-price" ng-hide="!result['price-musicmagpie']">
+              <i class="icon icon-musicmagpie"></i>
+              <span class="result-item-prices-price-value">
+                {{ result['price-musicmagpie'] }}
+              </span>
+            </span>
+
+            <!-- zapper -->
+            <span ng-hide="true" class="result-item-prices-price" ng-hide="!result['price-zapper']">
+              <i class="icon icon-zapper"></i>
+              <span class="result-item-prices-price-value">
+                {{ result['price-zapper'] }}
+              </span>
+            </span>
+
+            <!-- webuybooks -->
+            <span class="result-item-prices-price" ng-hide="!result['price-webuybooks']">
+              <i class="icon icon-webuybooks"></i>
+              <span class="result-item-prices-price-value">
+                {{ result['price-webuybooks'] }}
+              </span>
+            </span>
+
+            <!-- ziffit -->
+            <span class="result-item-prices-price" ng-hide="!result['price-ziffit']">
+              <i class="icon icon-ziffit"></i>
+              <span class="result-item-prices-price-value">
+                {{ result['price-ziffit'] }}
+              </span>
+            </span>
+          </span>
+        </div>
 
         <br/>
 

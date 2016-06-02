@@ -16,6 +16,8 @@ class ZapperParser extends AbstractParser {
     $session->headers['Origin'] = 'https://zapper.co.uk';
     $session->useragent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36';
 
+    $session->get('/');
+
     $session->post('/process.php', [
       'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8',
       'X-Requested-With' => 'XMLHttpRequest',
@@ -36,8 +38,6 @@ class ZapperParser extends AbstractParser {
       'timeout' => 100,
       'connect_timeout' => 100,
     ]);
-
-    var_dump($page1);die;
 
     $dto = new ParseResultDto;
 

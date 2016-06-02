@@ -2,15 +2,31 @@
   min-height: 0px !important;
 }
 
-#search {
-  background: #F5F5F5;
+.md-warn-lg {
+  padding: 10px 20px;
 }
+
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+.clearfix { display: inline-block; }
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
 
 .text-center {
   text-align: center;
 }
 .text-left {
   text-align: left;
+}
+
+#search {
+  background: #F5F5F5;
 }
 
 #searchIntermediateResults md-chips-wrap {
@@ -27,67 +43,94 @@
   max-width: 1000px;
   text-align: center;
 }
-#results #item {
-  display: inline-block;
-  margin: 5px;
-  padding: 5px;
-  background: #F9f9f9;
-  vertical-align: top;
-  text-align: left;
-}
 
-#results table {
-  width: 100%;
-}
-#results table thead {
-  background: #ECEFF1;
-}
-#results table thead th {
-  padding: 10px;
-}
-@media screen and (max-width: 800px) {
-  #results table thead th {
-    padding: 5px;
-  }
+.result-item {
+  margin-bottom: 3px;
+  padding: 3px 5px;
+  text-align: left;
+  transition: background 0.5s ease;
 }
 @media screen and (max-width: 700px) {
-  #results table thead {
-    font-size: 13px;
-  }
-  #results table thead th {
-    padding: 0px;
+  .result-item {
+    font-size: 14px;
   }
 }
-#results table tbody tr.query .date {
-  float: right;
+.result-item:nth-child(even) {
+  background: #FEFEFE;
 }
-
-#results table tbody tr.query td {
-  border-top: 10px #FAFAFA solid;
-}
-#results table tbody tr.query.even {
-  background: #cce4f5;
-}
-#results table tbody tr.prices.even {
-  background: #E3F2FD;
-}
-#results table tbody tr.query.odd {
-  background: #c9f0f5;
-}
-#results table tbody tr.prices.odd {
+.result-item:nth-child(odd) {
   background: #E0F7FA;
 }
-
-#results table thead th,
-#results table tbody td {
-  word-wrap: break-word;
-  word-break: break-all;
-}
-#results table td.date {
-  font-size: 10px;
-  text-align: center;
+.result-item:hover {
+  background: #80DEEA;
 }
 
-.md-warn-lg {
-  padding: 10px 20px;
+.result-item-title {
+  font-weight: bold;
+}
+
+.result-item-updated {
+  font-size: 13px;
+}
+@media screen and (max-width: 700px) {
+  .result-item-updated {
+    display: none;
+  }
+}
+
+.result-item-prices {
+  display: inline-block;
+  float: right;
+}
+.result-item-prices-price {
+  background: #597f84;
+  display: inline-block;
+  padding: 5px 7px;
+  font-size: 13px;
+  border-radius: 2px;
+}
+@media screen and (max-width: 700px) {
+  .result-item-prices-price {
+    padding: 3px 3px;
+  }
+}
+.result-item-prices-price-value {
+  color: white;
+  font-size: 15px;
+}
+@media screen and (max-width: 700px) {
+  .result-item-prices-price-value {
+    font-weight: bold;
+    font-size: 13px;
+  }
+}
+
+.result-item-prices-price .icon,
+.result-item-prices-price .result-item-prices-price-value {
+  display: inline-block;
+  vertical-align: top;
+}
+.result-item .icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: 16px;
+}
+.result-item .icon.icon-amazon {
+  background-image: url(https://www.amazon.co.uk/favicon.ico);
+}
+.result-item .icon.icon-ebay {
+  background-image: url(http://ebay.co.uk/favicon.ico);
+}
+.result-item .icon.icon-musicmagpie {
+  background-image: url(http://www.musicmagpie.co.uk/media/16655/favicon.ico);
+}
+.result-item .icon.icon-zapper {
+  background-image: url(https://zapper.co.uk/images/icons/favicon.ico);
+}
+.result-item .icon.icon-ziffit {
+  background-image: url(https://www.ziffit.com/static/img/favicon.ico);
+}
+.result-item .icon.icon-webuybooks {
+  background-image: url(https://www.webuybooks.co.uk/wp-content/themes/webuybooks2014/favicon.ico);
 }
