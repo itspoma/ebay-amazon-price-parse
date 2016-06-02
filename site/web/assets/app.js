@@ -39,15 +39,33 @@ app.factory('Results', function ($resource, $http) {
           response.data.records.forEach(function (record) {
             record.added_date = new Date(record.added_date);
             record.updated_date = new Date(record.updated_date);
-            record.title = null;
+
+            record.title = (function () {
+              for (var k in record) {
+                var v = record[k];
+                if (0 == k.indexOf('title-') && v) {
+                  return v;
+                }
+              }
+
+              return null
+            })();
+
+
+            record.max_price = 0;
 
             for (var k in record) {
               var v = record[k];
-              if (0 == k.indexOf('title-') && v) {
-                record.title = v;
-                break;
+              if (0 == k.indexOf('price-') && v) {
+                var _price = v.match(/[\d\.]+/);
+                    _price = _price ? _price[0] : null;
+
+                if (_price && _price > record.max_price) {
+                  record.max_price = parseFloat(_price);
+                }
               }
             }
+
           });
         }
 
@@ -105,6 +123,7 @@ app.controller('pageCtrl', function($scope, $timeout, $mdToast, Results, Search)
         $scope.results = response.data.records;
       }
     });
+
   }
 
   $scope.focusQueryField();

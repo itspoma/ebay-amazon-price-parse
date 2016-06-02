@@ -30,10 +30,6 @@
             placeholder="5013705221729"
             required
           >
-
-          <div ng-messages="searchForm.query.$error">
-            <!-- <div ng-message="required">The field is required!</div> -->
-          </div>
         </md-input-container>
 
         <div flex></div>
@@ -46,6 +42,8 @@
           >Search</md-button>
 
           <md-progress-circular ng-show="searchInProgress" md-mode="indeterminate"></md-progress-circular>
+
+          <md-button class="md-warn md-raised" ng-click="deleteAll()">Delete all</md-button>
         </section>
 
       </form>
@@ -75,12 +73,13 @@
 
       <div id="results" ng-hide="!results.length">
 
-        <div class="result-item clearfix" ng-repeat="result in results | orderBy:'-updated_date'">
+        <div class="result-item clearfix" ng-repeat="result in results | orderBy:'-max_price'">
           <md-tooltip>
             <span class="result-item-query">{{ result.query }}</span>
           </md-tooltip>
 
-          <span class="result-item-updated">{{ result.updated_date | date:'dd/mm/yy HH:mm:ss' }}</span>
+          <span class="result-item-updated">
+            {{ result.updated_date | date:'dd/mm/yy HH:mm:ss' }}</span>
           <span class="result-item-title">{{ result.title }}</span>
 
           <span class="result-item-prices">
@@ -133,13 +132,18 @@
                 {{ result['price-ziffit'] }}
               </span>
             </span>
+
+            <!-- max price -->
+            <span class="result-item-prices-price result-item-prices-price-max">
+              <span class="result-item-prices-price-value">
+                {{ result.max_price }}
+              </span>
+            </span>
           </span>
+
         </div>
 
-        <br/>
-
-        <md-button class="md-warn md-warn-lg md-raised" ng-click="deleteAll()">Delete all</md-button>
-
+        <!--  -->
       </div>
     </div>
   </div>

@@ -2,10 +2,6 @@
   min-height: 0px !important;
 }
 
-.md-warn-lg {
-  padding: 10px 20px;
-}
-
 .clearfix:after {
   visibility: hidden;
   display: block;
@@ -103,6 +99,9 @@
     font-weight: bold;
     font-size: 13px;
   }
+}
+.result-item-prices-price.result-item-prices-price-max {
+  background: #B71C1C;
 }
 
 .result-item-prices-price .icon,
