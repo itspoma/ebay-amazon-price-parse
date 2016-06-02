@@ -37,6 +37,8 @@ class ZapperParser extends AbstractParser {
       'connect_timeout' => 100,
     ]);
 
+    var_dump($page1);die;
+
     $dto = new ParseResultDto;
 
     if (preg_match('/TOTAL &pound;([\d\.]+)</', $page1->raw, $m)) {
