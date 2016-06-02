@@ -78,8 +78,10 @@
             <span class="result-item-query">{{ result.query }}</span>
           </md-tooltip>
 
-          <span class="result-item-updated">
-            {{ result.updated_date | date:'dd/mm/yy HH:mm:ss' }}</span>
+          <span ng-hide="true" class="result-item-updated">
+            {{ result.updated_date | date:'dd/mm/yy HH:mm:ss' }}
+          </span>
+
           <span class="result-item-title">{{ result.title }}</span>
 
           <span class="result-item-prices">
