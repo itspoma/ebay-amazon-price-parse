@@ -118,20 +118,20 @@
   background-size: 16px;
 }
 .result-item .icon.icon-amazon {
-  background-image: url(https://www.amazon.co.uk/favicon.ico);
+  background-image: url(/assets/images/amazon.ico);
 }
 .result-item .icon.icon-ebay {
-  background-image: url(http://ebay.co.uk/favicon.ico);
+  background-image: url(/assets/images/ebay.ico);
 }
 .result-item .icon.icon-musicmagpie {
-  background-image: url(http://www.musicmagpie.co.uk/media/16655/favicon.ico);
+  background-image: url(/assets/images/musicmagpie.ico);
 }
 .result-item .icon.icon-zapper {
-  background-image: url(https://zapper.co.uk/images/icons/favicon.ico);
+  background-image: url(/assets/images/zapper.ico);
 }
 .result-item .icon.icon-ziffit {
-  background-image: url(https://www.ziffit.com/static/img/favicon.ico);
+  background-image: url(/assets/images/ziffit.ico);
 }
 .result-item .icon.icon-webuybooks {
-  background-image: url(https://www.webuybooks.co.uk/wp-content/themes/webuybooks2014/favicon.ico);
+  background-image: url(/assets/images/webuybooks.ico);
 }
