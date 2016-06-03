@@ -25,7 +25,7 @@ class EbayLowestSoldParser extends AbstractParser {
     $dto = new ParseResultDto;
 
     if (preg_match('/lvprice prc.+?[\r\n]+.+?bold bidsold">[\r\s\t\n]*(.+?)</', $page2->raw, $m)) {
-      $dto->price = trim($m[1]);
+      $dto->price = trim(html_entity_decode($m[1]));
     }
 
     if (preg_match('/src=.http...thumbs.ebaystatic.com..+?alt=\'(.+?)\' \/>/', $page2->raw, $m)) {
