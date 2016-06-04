@@ -29,36 +29,42 @@ if (strpos($_SERVER['SCRIPT_NAME'], 'api.php')) {
         $parsedName = ParserService::getParserName($source);
 
         // parse action
-        $parsedDto = ParserService::parse($source, $query);
-        $parsedPrice = $parsedDto->price;
-        $parsedTitle = $parsedDto->title;
+        try {
+          $parsedDto = ParserService::parse($source, $query);
+          $parsedPrice = $parsedDto->price;
+          $parsedTitle = $parsedDto->title;
 
-        // check if record already exists (by query)
-        $record = FileStorage::getInstance()->findBy('records', 'query', $query);
+          // check if record already exists (by query)
+          $record = FileStorage::getInstance()->findBy('records', 'query', $query);
 
-        // if exists, then update
-        if ($record) {
-          $record["price-$source"] = $parsedPrice;
-          $record["title-$source"] = $parsedTitle;
-          $record['updated_date']  = date('Y-m-d H:i:s');
+          // if exists, then update
+          if ($record) {
+            $record["price-$source"] = $parsedPrice;
+            $record["title-$source"] = $parsedTitle;
+            $record['updated_date']  = date('Y-m-d H:i:s');
 
-          FileStorage::getInstance()->setByKey('records', 'query', $query, $record);
+            FileStorage::getInstance()->setByKey('records', 'query', $query, $record);
+          }
+          // if not - the create new
+          else {
+            $records = FileStorage::getInstance()->append('records', [
+              'query'         => $query,
+              'added_date'    => date('Y-m-d H:i:s'),
+              'update_date'   => date('Y-m-d H:i:s'),
+              "price-$source" => $parsedPrice,
+              "title-$source" => $parsedTitle,
+            ]);
+          }
+
+          $response['data']['price'] = $parsedPrice;
+          $response['data']['title'] = $parsedTitle;
         }
-        // if not - the create new
-        else {
-          $records = FileStorage::getInstance()->append('records', [
-            'query'         => $query,
-            'added_date'    => date('Y-m-d H:i:s'),
-            'update_date'   => date('Y-m-d H:i:s'),
-            "price-$source" => $parsedPrice,
-            "title-$source" => $parsedTitle,
-          ]);
+        catch (Exception $e) {
+          $response['error'] = $e->getMessage();
         }
 
         $response['data']['source-name'] = $parsedName;
         $response['data']['source'] = $source;
-        $response['data']['price'] = $parsedPrice;
-        $response['data']['title'] = $parsedTitle;
       }
     }
 
